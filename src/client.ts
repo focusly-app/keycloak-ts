@@ -80,6 +80,8 @@ export class KeycloakClient implements KeycloakInstance {
 
   clientId?: string;
 
+  clientSecret?: string;
+
   redirectUri?: string;
 
   profile?: KeycloakProfile;
@@ -303,6 +305,7 @@ export class KeycloakClient implements KeycloakInstance {
 
     const params = new Map<string, string>();
     params.set('client_id', this.clientId!);
+    params.set('client_secret', this.clientSecret!);
     params.set('redirect_uri', redirectUri);
     params.set('state', state);
     params.set('response_mode', this.responseMode!);
@@ -384,6 +387,7 @@ export class KeycloakClient implements KeycloakInstance {
 
     const params = new Map<string, string>();
     params.set('referrer', this.clientId!);
+    params.set('referrer', this.clientSecret!);
     params.set('referrer_uri', this.adapter!.redirectUri());
 
     return `${realm}/account?${formatQuerystringParameters(params)}`;
@@ -443,6 +447,7 @@ export class KeycloakClient implements KeycloakInstance {
 
       const params = new Map<string, string>();
       params.set('client_id', this.clientId!);
+      params.set('client_secret', this.clientSecret!);
       params.set('grant_type', 'refresh_token');
       params.set('refresh_token', this.refreshToken!);
 
@@ -685,6 +690,7 @@ export class KeycloakClient implements KeycloakInstance {
       params.set('code', code);
       params.set('grant_type', 'authorization_code');
       params.set('client_id', this.clientId!);
+      params.set('client_secret', this.clientSecret!);
       params.set('redirect_uri', oauth.redirectUri!);
 
       if (oauth.pkceCodeVerifier) {
@@ -941,6 +947,7 @@ export class KeycloakClient implements KeycloakInstance {
 
       this.realm = configJSON.realm;
       this.clientId = configJSON.resource;
+      this.clientSecret = configJSON.resource;
 
       this.endpoints = setupOidcEndoints({
         realm: this.realm,
@@ -958,7 +965,12 @@ export class KeycloakClient implements KeycloakInstance {
       throw new Error('clientId missing from configuration');
     }
 
+    if (!config.clientSecret) {
+      throw new Error('clientSecret missing from configuration');
+    }
+
     this.clientId = config.clientId;
+    this.clientSecret = config.clientSecret;
 
     const oidcProvider = config.oidcProvider;
     // When oidcProvider config is not supplied, use local configuration params

@@ -19,6 +19,10 @@ export interface KeycloakConfig {
    * OIDC-specific configuration parameters
    */
   oidcProvider?: string | OIDCProviderConfig;
+  /**
+   * Client secret, example: 'myapp'
+   */
+  clientSecret: string;
 }
 
 export type KeycloakOnLoad = 'login-required' | 'check-sso';
